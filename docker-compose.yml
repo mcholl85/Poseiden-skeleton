@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.3
+    environment:
+      MYSQL_DATABASE: demo
+      MYSQL_USER: poseiden
+      MYSQL_PASSWORD: skeleton
+      MYSQL_ROOT_PASSWORD: rootroot
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./doc/data.sql:/docker-entrypoint-initdb.d/data.sql
+
+volumes:
+  db-data:
