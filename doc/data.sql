@@ -1,6 +1,6 @@
 
 CREATE TABLE BidList (
-  BidListId tinyint(4) NOT NULL AUTO_INCREMENT,
+  bidListId tinyint(4) NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
   bidQuantity DOUBLE,
@@ -23,11 +23,11 @@ CREATE TABLE BidList (
   sourceListId VARCHAR(125),
   side VARCHAR(125),
 
-  PRIMARY KEY (BidListId)
+  PRIMARY KEY (bidListId)
 );
 
 CREATE TABLE Trade (
-  TradeId tinyint(4) NOT NULL AUTO_INCREMENT,
+  tradeId tinyint(4) NOT NULL AUTO_INCREMENT,
   account VARCHAR(30) NOT NULL,
   type VARCHAR(30) NOT NULL,
   buyQuantity DOUBLE,
@@ -49,32 +49,32 @@ CREATE TABLE Trade (
   sourceListId VARCHAR(125),
   side VARCHAR(125),
 
-  PRIMARY KEY (TradeId)
+  PRIMARY KEY (tradeId)
 );
 
 CREATE TABLE CurvePoint (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
   CurveId tinyint,
   asOfDate TIMESTAMP,
   term DOUBLE ,
   value DOUBLE ,
   creationDate TIMESTAMP ,
 
-  PRIMARY KEY (Id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE Rating (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
   moodysRating VARCHAR(125),
   sandPRating VARCHAR(125),
   fitchRating VARCHAR(125),
   orderNumber tinyint,
 
-  PRIMARY KEY (Id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE RuleName (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
   name VARCHAR(125),
   description VARCHAR(125),
   json VARCHAR(125),
@@ -82,17 +82,17 @@ CREATE TABLE RuleName (
   sqlStr VARCHAR(125),
   sqlPart VARCHAR(125),
 
-  PRIMARY KEY (Id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE Users (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
   username VARCHAR(125),
   password VARCHAR(125),
   fullname VARCHAR(125),
   role VARCHAR(125),
 
-  PRIMARY KEY (Id)
+  PRIMARY KEY (id)
 );
 
 insert into Users(fullname, username, password, role) values("Administrator", "admin", "$2a$10$pBV8ILO/s/nao4wVnGLrh.sa/rnr5pDpbeC4E.KNzQWoy8obFZdaa", "ADMIN");
