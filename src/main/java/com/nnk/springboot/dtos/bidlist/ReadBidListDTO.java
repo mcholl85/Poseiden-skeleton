@@ -1,10 +1,14 @@
 package com.nnk.springboot.dtos.bidlist;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class BidListDto {
-    private Integer bidListId;
+@AllArgsConstructor
+@NoArgsConstructor
+public class ReadBidListDTO {
+    private Integer id;
     private String account;
     private String type;
     private Double bidQuantity;
