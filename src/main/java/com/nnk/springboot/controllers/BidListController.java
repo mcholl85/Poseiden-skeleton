@@ -1,54 +1,84 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.dtos.bidlist.CreateBidListDTO;
+import com.nnk.springboot.dtos.bidlist.ReadBidListDTO;
+import com.nnk.springboot.dtos.bidlist.UpdateBidListDTO;
+import com.nnk.springboot.services.BidListService;
+import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
+@Log4j2
 @Controller
 public class BidListController {
-    // TODO: Inject Bid service
+    @Autowired
+    private BidListService bidListService;
 
     @RequestMapping("/bidList/list")
-    public String home(Model model)
-    {
-        // TODO: call service find all bids to show to the view
+    public String home(Model model) {
+        List<ReadBidListDTO> readBidListDTO = bidListService.getBidListDto();
+        model.addAttribute("bidLists", readBidListDTO);
+
         return "bidList/list";
     }
 
     @GetMapping("/bidList/add")
-    public String addBidForm(BidList bid) {
+    public String addBidForm(@ModelAttribute("bidList") CreateBidListDTO bidList) {
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
-    public String validate(@Valid BidList bid, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return bid list
+    public String validate(@Valid @ModelAttribute("bidList") CreateBidListDTO bid, BindingResult result) {
+        if(!result.hasErrors()) {
+            bidListService.addBidList(bid);
+
+            return "redirect:/bidList/list";
+        }
         return "bidList/add";
     }
 
     @GetMapping("/bidList/update/{id}")
-    public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Bid by Id and to model then show to the form
-        return "bidList/update";
+    public String showUpdateForm(@ModelAttribute("id") @PathVariable("id") Integer id, Model model) {
+        try {
+            ReadBidListDTO bidListDTO = bidListService.getBidListDtoById(id);
+            model.addAttribute("bidList", bidListDTO);
+
+            return "bidList/update";
+        } catch (EntityNotFoundException e) {
+            log.info(e.getMessage());
+            return "redirect:/bidList/list";
+        }
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Bid and return list Bid
+    public String updateBid(@ModelAttribute("id") @PathVariable("id") Integer id, @ModelAttribute("bidList") @Valid UpdateBidListDTO bidList,
+                            BindingResult result) {
+        if (result.hasErrors()) {
+            return "bidList/update";
+        }
+
+        ReadBidListDTO bidListDTO = bidListService.updateBidListById(id, bidList);
+
+        if (bidListDTO == null) {
+            result.rejectValue("account", "error.account", "Updating Error...");
+            return "bidList/update";
+        }
+
         return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
+    public String deleteBid(@PathVariable("id") Integer id) {
+        bidListService.deleteBidList(id);
+
         return "redirect:/bidList/list";
     }
 }
